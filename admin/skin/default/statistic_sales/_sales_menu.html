@@ -1,0 +1,28 @@
+
+<!--{? admin_skin_type == 'org'}-->
+<ul class="tab_01 v2 pageSetTab">
+	<li><a href="sales_sales"  value="sales_sales">매출액</a></li>
+	<!--{ ? serviceLimit('H_FR') }-->
+		<li><a href="javascript:void(0);" onclick="{=serviceLimit('A1')}">상품</a></li>
+		<li><a href="javascript:void(0);" onclick="{=serviceLimit('A1')}">유입경로</a></li>
+		<li><a href="javascript:void(0);" onclick="{=serviceLimit('A1')}">카테고리/브랜드</a></li>
+		<li><a href="javascript:void(0);" onclick="{=serviceLimit('A1')}">환경</a></li>
+		<li><a href="javascript:void(0);" onclick="{=serviceLimit('A1')}">수단</a></li>
+		<li><a href="javascript:void(0);" onclick="{=serviceLimit('A1')}">성별/연령/지역</a></li>
+		<li><a href="javascript:void(0);" onclick="{=serviceLimit('A1')}">매장별 매출</a></li>
+	<!--{ : }-->
+		<li><a href="sales_goods" value="sales_goods">상품</a></li>
+		<li><a href="sales_referer" value="sales_referer">유입경로</a></li>
+		<li><a href="sales_category" value="sales_category">카테고리/브랜드</a></li>
+		<li><a href="sales_platform" value="sales_platform">환경</a></li>
+		<li><a href="sales_payment" value="sales_payment">결제수단</a></li>
+		<li><a href="sales_etc" value="sales_etc">성별/연령/지역</a></li>
+		<!--{ ? serviceLimit('H_AD') }-->
+		<li><a href="sales_seller" value="sales_seller">입점사별</a></li>
+		<!--{ / }-->
+		<!--{ ? checkO2OService }-->
+			<!--{ # o2o_statistic_sales_menu }-->
+		<!--{ / }-->
+	<!--{ / }-->
+</ul>
+<!--{/}-->

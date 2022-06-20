@@ -1,0 +1,177 @@
+{ #layout_header }
+<script type="text/javascript" >
+	$(document).ready(function() {
+
+		gSearchForm.init({'pageid':'accountgroup','sc':{=scObj}});
+		{ ? sc.pay_period }
+			gSearchForm.provider_setting('{sc.pay_period}');
+		{ / }
+	});
+</script>
+
+<!-- 페이지 타이틀 바 : 시작 -->
+<div id="page-title-bar-area">
+	<div id="page-title-bar">
+		<!-- 타이틀 -->
+		<div class="page-title">
+			<h2>업체별 정산</h2>
+		</div>		
+	</div>
+</div>
+<!-- 페이지 타이틀 바 : 끝 -->
+
+<!-- 서브 레이아웃 영역 : 시작 -->
+<!-- 리스트검색폼 : 시작 -->
+<div id="search_container" class="search_container">
+	<form name="accountsearch" id="accountsearch"  class="search_form">
+	<table class="table_search">
+		<tr>
+			<th>기간</th>
+			<td>
+				<select name="s_year" class="wx80" defaultValue="{=date('Y')}">
+					{@ year}
+					<option value="{.value_}" {? sc.s_year == .value_ } selected="selected" {/} >{.value_}</option>
+					{ / }
+				</select>
+				<select name="s_month" class="wx80" defaultValue="{=date('m')}">
+					{@ month }
+					<option value="{.value_}" {? sc.s_month == .value_ } selected="selected" {/} >{.value_}</option>
+					{ / }
+				</select>
+			</td>
+		</tr>
+
+		<tr>
+			<th>입점사명</th>
+			<td>				
+				<select name="provider_seq_selector" data-mode='account' style="vertical-align:middle;">
+				</select>
+				<input type="hidden" class="provider_seq" name="provider_seq" value="{sc.provider_seq}" />		
+			</td>
+		</tr>
+
+		<tr>
+			<th>정산 주기</th>
+			<td>
+				<div class="resp_radio">
+					<label><input type="radio" name="pay_period" id="pay_period_all" value="all"> 전체</label>
+					<label><input type="radio" name="pay_period" id="pay_period_1" value="1"> 1회</label>
+					<label><input type="radio" name="pay_period" id="pay_period_2" value="2"> 2회</label>
+					<label><input type="radio" name="pay_period" id="pay_period_4" value="4"> 4회</label>
+				</div>
+			</td>
+		</tr>
+	</table>
+
+	<div class="footer search_btn_lay"></div>
+	
+	</form>
+</div>
+
+<div class="contents_dvs v2">
+	<div class="table_row_frame">
+		<div class="dvs_top">			
+			<div class="dvs_left">	
+				<span class="confirm_setting_date">
+				<!--{? accountConfirm}-->
+					{sc.s_year}년 {sc.s_month}월 정산마감일 : {accountConfirm.confirm_name}({accountConfirm.confirm_end_date} 마감실행)
+				<!--{ : }-->
+					{sc.s_year}년 {sc.s_month}월 정산마감일 : {accountallConfirmSetting.confirm_name}({accountallConfirmSetting.confirm_date} <font color="red">마감실행예정</font>)
+				<!--{ / }-->
+				
+				</span>
+				<span>* 부가세(VAT) 포함</span>
+			</div>
+
+			<div class="dvs_right">
+				{? count(loop) > 0 }
+				<button type="button" onclick="divExcelDownload('sellertotal_{sc.s_year}{sc.s_month}','#account_table')" value="" class="resp_btn v3"><span class="icon_excel"></span> 다운로드</button>
+				{:}
+				<button type="button" onclick="openDialogAlert('조회내역이 없습니다',300,180);" class="resp_btn v3"><span class="icon_excel"></span> 다운로드</button>
+				{/}
+			</div>
+		</div>
+
+		<div id="account_table">
+			<table width="100%" class="calc-table-style group" cellpadding="0" cellspacing="0">
+				<caption>정산리스트</caption>
+				<!-- 테이블 헤더 : 시작 -->
+				<colgroup>
+					<col width="35"/><!--순번-->
+					<col width="200" /><!--입점사-->
+					<col width="100" /><!--정산횟수-->
+					<col width="100" /><!--정산기간-->
+					<col width="130" /><!--정산-정산대상금액-->
+					<col width="130" /><!--정산-수수료-->
+					<col width="130" /><!--정산금액-->
+				</colgroup>
+				<thead>
+					<tr>
+						<th scope="col" rowspan="2">순번</th>
+						<th scope="col" rowspan="2">입점사 ID</th>
+						<th scope="col" rowspan="2">정산횟수</th>
+						<th scope="col" rowspan="2">정산기간</th>
+						<th scope="col" colspan="2">정산</th>
+						<th scope="col" rowspan="2">정산금액</th>
+					</tr>
+					<tr>
+						<th scope="col">정산대상금액</th>
+						<th scope="col">수수료</th>
+					</tr>
+				</thead>
+				<tbody>
+					{? loopcnt > 0 }
+					{ @ loop }
+					<tr>
+						{? .period_count == 0}<td rowspan="{=.period_type}">{=(.loop_index+1)}</td>{/}
+						{? .period_count == 0}<td rowspan="{=.period_type}" class="left"><a href="./accountallviewerall?provider_seq={.provider_seq}&provider_seq_selector={.provider_seq}&provider_name={=urlencode(.provider_name)}({.provider_id})&s_year={sc.s_year}&s_month={sc.s_month}" target="_blank">{.provider_name}({.provider_id})</a></td>{/}
+						{? .period_count == 0}<td rowspan="{=.period_type}">월{=.period_type}회</td>{/}
+						<td>
+							{? .period_type == '2'}
+								{? .period_count == 0}01일 ~ 15일{/}
+								{? .period_count == 1}16일 ~ 말일{/}
+							{: .period_type == '4'}
+								{? .period_count == 0}01일 ~ 07일{/}
+								{? .period_count == 1}08일 ~ 14일{/}
+								{? .period_count == 2}15일 ~ 21일{/}
+								{? .period_count == 3}22일 ~ 말일{/}
+							{:}
+								01일 ~ 말일
+							{/}
+						</td>
+						<td class="right">{=number_format(.sum_price)}</td>
+						<td class="right">{=number_format(.sum_feeprice)}</td>
+						<td class="right">{=number_format(.sum_commission_price)}</td>
+					</tr>
+					{/}
+					{:}
+					<tr>
+						<td colspan="7" class="nodata">조회 내역이 없습니다.</td>
+					</tr>
+					{/}
+				</tbody>
+				<tfoot>
+					<tr class="sum">
+						<td colspan="4">총합계</td>
+						<td class="right">{=number_format(tot.sum_price)}</td>
+						<td class="right">{=number_format(tot.sum_feeprice)}</td>
+						<td class="right">{=number_format(tot.sum_commission_price)}</td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+
+		<div class="dvs_bottom">			
+			<div class="dvs_right">	
+				{? count(loop) > 0 }
+				<button type="button" onclick="divExcelDownload('sellertotal_{sc.s_year}{sc.s_month}','#account_table')" value="" class="resp_btn v3"><span class="icon_excel"></span> 다운로드</button>
+				{:}
+				<button type="button" onclick="openDialogAlert('조회내역이 없습니다',300,180);" class="resp_btn v3"><span class="icon_excel"></span> 다운로드</button>
+				{/}
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 서브 레이아웃 영역 : 끝 -->
+
+{ #layout_footer }

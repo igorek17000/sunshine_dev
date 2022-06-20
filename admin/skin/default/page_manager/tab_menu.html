@@ -1,0 +1,27 @@
+<script>
+$(function(){
+	
+	$(".tabpagetype > li > a").on('click',function(){
+		var page_type = $(this).attr('data-page_type');
+		
+		/*if(page_type == 'event' && window.Firstmall.Config.Environment.OperationType !="light") {
+			document.location.href = '/admin/page_manager/subpage_layout?cmd=event';
+			return false;
+		}
+		*/
+		if(window.Firstmall.Config.Environment.serviceLimit.H_FR == true && (page_type == "location" || page_type == "bigdata_criteria")){
+			{=serviceLimit('A1')}
+		}else{
+			document.location.href='/admin/page_manager/page_layout?cmd='+page_type;
+		}
+	});
+});
+</script>
+<div>
+	<ul class="tab_02 tabpagetype">
+		{ @ page_type_arr }
+		<li><a href="javascript:void(0);" data-page_type="{=.key_}" {? .key_ === page_type }class='current'{/}>{=.value_}</a></li>
+		{ / }
+	</ul>
+	
+</div>
